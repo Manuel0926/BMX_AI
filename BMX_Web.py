@@ -25,49 +25,78 @@ def es_correo_valido(email):
     return re.match(patron, email) is not None
 
 
-# --- ELIMINACIÓN ABSOLUTA DE GADGETS Y LOGS DE LA NUBE ---
+# --- ELIMINACIÓN ABSOLUTA DE GADGETS, LOGS Y BOTONES NATIVOS ---
 st.markdown("""
 <style>
-/* 1. Apagar por completo el bloque superior flotante de Streamlit Cloud */
-header, [data-testid="stHeader"], .stAppHeader, div[data-testid="stHeader"], [data-testid="stDecoration"], button[data-testid="stSidebarCollapseButton"] {
+/* 1. Apagar por completo el bloque superior flotante de Streamlit Cloud y botones nativos de colapso */
+header, 
+[data-testid="stHeader"], 
+.stAppHeader, 
+div[data-testid="stHeader"], 
+[data-testid="stDecoration"], 
+button[data-testid="stSidebarCollapseButton"],
+[data-testid="collapsedControl"],
+[data-testid="stSidebarCollapsedControl"] {
     visibility: hidden !important;
     display: none !important;
+    pointer-events: none !important;
 }
+
+/* Forzar la eliminación de la flecha nativa interna de cierre cuando el sidebar está expandido */
+[data-testid="stSidebar"] button:not([class*="st-"]) {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Garantizar que los botones legítimos del usuario dentro del sidebar SÍ se muestren */
+[data-testid="stSidebar"] [data-testid="baseButton-secondary"], 
+[data-testid="stSidebar"] [data-testid="baseButton-primary"],
+[data-testid="stSidebar"] button[class*="st-"] {
+    display: inline-flex !important;
+    visibility: visible !important;
+}
+
 /* Ajustar el cuerpo para que comience arriba sin dejar espacios en blanco vacíos */
 .stApp {
     background-color: #7CB4E6 !important;
     margin-top: 15px !important;
 }
+
 /* REDUCCIÓN CRÍTICA DE ESPACIO VERTICAL (ÁREA CENTRAL DE CONSULTA) */
 .block-container, [data-testid="stMainBlockContainer"] {
     padding-top: 0px !important;
     padding-bottom: 0px !important;
     margin-top: 0px !important;
 }
+
 div.stButton {
     margin-top: 0px !important;
     margin-bottom: 0px !important;
 }
+
 hr {
     margin-top: 2px !important;
     margin-bottom: 8px !important;
 }
 
 /* 2. Ocultar la barra inferior 'Manage app' y el pie de página de la nube */
-footer, [data-testid="manage_app_button"], button:has(div:contains("Manage app")), div[class*="stBottom"] > div:nth-child(2) {
+footer, [data-testid="manage_app_button"], 
+button:has(div:contains("Manage app")), div[class*="stBottom"] > div:nth-child(2) {
     visibility: hidden !important;
     display: none !important;
 }
+
 .viewerBadge, iframe[title="managed-hosted-app-badge"] {
     visibility: hidden !important;
     display: none !important;
 }
+
 /* 3. CONTROL DE ANIMACIÓN DE LA BARRA LATERAL PERSONALIZADA */
-/* Si el estado de Streamlit oculta el sidebar, garantizamos que las transiciones de CSS sigan respondiendo limpiamente */
 [data-sidebar-hidden="true"] [data-testid="stSidebar"] {
     margin-left: -350px !important;
     transition: all 0.3s ease-in-out !important;
 }
+
 /* Ocultar elementos de control automáticamente del papel físico cuando se genere el PDF */
 @media print {
     .viewerBadge, footer, button, .stChatInput, [data-testid="stSidebar"], div[class*="stBottom"] {
@@ -79,39 +108,82 @@ footer, [data-testid="manage_app_button"], button:has(div:contains("Manage app")
         color: #000000 !important;
     }
 }
+
 /* --- ESTILOS DE COLORES PREMIUM PARA TEXTO Y CONTENEDORES --- */
-[data-testid="stSidebar"], [data-testid="stSidebar"] > div:first-child, [data-testid="stChatInputHoverContainer"], div[data-testid="stBottom"] > div {
+[data-testid="stSidebar"], [data-testid="stSidebar"] > div:first-child, 
+[data-testid="stChatInputHoverContainer"], div[data-testid="stBottom"] > div {
     background-color: #7CB4E6 !important; 
 }
+
 html, body, p, span, label, li, h2, h3, h4, h5, h6, [data-testid="stMarkdownContainer"] p, [data-testid="stWidgetLabel"] p { 
     color: #000000 !important; 
 }
+
 .chat-header-title { 
-    font-family: sans-serif !important; color: #000000 !important; font-weight: 700 !important; font-size: 2.2rem !important; border-bottom: 3px solid #000000 !important; margin-bottom: 25px; padding-bottom: 8px; display: inline-block; 
+    font-family: sans-serif !important; 
+    color: #000000 !important; 
+    font-weight: 700 !important; 
+    font-size: 2.2rem !important; 
+    border-bottom: 3px solid #000000 !important; 
+    margin-bottom: 25px; 
+    padding-bottom: 8px; 
+    display: inline-block; 
 }
+
 .sidebar-brand-title { 
-    font-family: sans-serif !important; color: #000000 !important; font-weight: 700 !important; font-size: 1.45rem !important; letter-spacing: -0.5px !important; text-align: center; margin-bottom: 20px; white-space: nowrap !important; 
+    font-family: sans-serif !important; 
+    color: #000000 !important; 
+    font-weight: 700 !important; 
+    font-size: 1.45rem !important; 
+    letter-spacing: -0.5px !important; 
+    text-align: center; 
+    margin-bottom: 20px; 
+    white-space: nowrap !important; 
 }
+
 div[data-testid="stExpander"] {
-    background-color: #639FD3 !important; border: 1px solid #000000 !important; border-radius: 12px !important; 
+    background-color: #639FD3 !important; 
+    border: 1px solid #000000 !important; 
+    border-radius: 12px !important; 
 }
+
 .sidebar-card { 
-    background-color: #4B8BC2 !important; border: 1px solid #000000 !important; padding: 16px !important; border-radius: 12px !important; margin-bottom: 15px !important; 
+    background-color: #4B8BC2 !important; 
+    border: 1px solid #000000 !important; 
+    padding: 16px !important; 
+    border-radius: 12px !important; 
+    margin-bottom: 15px !important; 
 }
+
 .sidebar-card, .sidebar-card p, .sidebar-card span { 
-    color: #000000 !important; font-weight: bold !important; 
+    color: #000000 !important; 
+    font-weight: bold !important; 
 }
+
 .sidebar-card .badge-active, .sidebar-card .badge-active span, .badge-active { 
-    color: #00FF66 !important; font-weight: 900 !important; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important; 
+    color: #00FF66 !important; 
+    font-weight: 900 !important; 
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5) !important; 
 }
-[data-testid="baseButton-secondary"], [data-testid="baseButton-primary"], div[data-testid="stLinkButton"] a { 
-    background-color: #3A75A8 !important; border: 2px solid #000000 !important; border-radius: 24px !important; padding: 8px 24px !important; transition: all 0.25s ease !important; 
+
+[data-testid="baseButton-secondary"], [data-testid="baseButton-primary"], 
+div[data-testid="stLinkButton"] a { 
+    background-color: #3A75A8 !important; 
+    border: 2px solid #000000 !important; 
+    border-radius: 24px !important; 
+    padding: 8px 24px !important; 
+    transition: all 0.25s ease !important; 
 }
+
 [data-testid="baseButton-secondary"] p, [data-testid="baseButton-primary"] p, div[data-testid="stLinkButton"] a p { 
-    color: #FFFFFF !important; font-weight: 600 !important; font-size: 14px !important; 
+    color: #FFFFFF !important; 
+    font-weight: 600 !important; 
+    font-size: 14px !important; 
 }
+
 [data-testid="baseButton-secondary"]:hover, [data-testid="baseButton-primary"]:hover, div[data-testid="stLinkButton"] a:hover { 
-    background-color: #0F3352 !important; border-color: #FFFFFF !important; 
+    background-color: #0F3352 !important; 
+    border-color: #FFFFFF !important; 
 }
 </style>
 """, unsafe_allow_html=True)
@@ -120,10 +192,10 @@ div[data-testid="stExpander"] {
 st.components.v1.html("""
 <script>
 const stop = () => {
-    window.parent.document.querySelectorAll('input').forEach(el => {
-        el.setAttribute('autocomplete', 'off');
-        el.setAttribute('name', Math.random().toString(36).substring(7));
-    });
+ window.parent.document.querySelectorAll('input').forEach(el => {
+ el.setAttribute('autocomplete', 'off');
+ el.setAttribute('name', Math.random().toString(36).substring(7));
+ });
 };
 stop(); 
 setInterval(stop, 500);
@@ -139,16 +211,16 @@ class BMXWebScanner:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS usuarios (
-            id INTEGER PRIMARY KEY AUTOINCREMENT, 
-            nombre TEXT, 
-            email TEXT UNIQUE, 
-            plan_suscripcion TEXT, 
-            fecha_pago TEXT, 
-            activo INTEGER DEFAULT 0,
-            contador_ingresos INTEGER DEFAULT 0,
-            fecha_registro TEXT)''')
+         id INTEGER PRIMARY KEY AUTOINCREMENT, 
+         nombre TEXT, 
+         email TEXT UNIQUE, 
+         plan_suscripcion TEXT, 
+         fecha_pago TEXT, 
+         activo INTEGER DEFAULT 0,
+         contador_ingresos INTEGER DEFAULT 0,
+         fecha_registro TEXT)''')
         cursor.execute("PRAGMA table_info(usuarios)")
-        columnas = [col for col in cursor.fetchall()]
+        columnas = [col[1] for col in cursor.fetchall()]
         if "contador_ingresos" not in columnas:
             try:
                 cursor.execute("ALTER TABLE usuarios ADD COLUMN contador_ingresos INTEGER DEFAULT 0")
@@ -188,7 +260,6 @@ class BMXWebScanner:
 
 # Instanciar aplicación
 app = BMXWebScanner()
-
 if "suscrito" not in st.session_state: st.session_state.suscrito = False
 if "plan" not in st.session_state: st.session_state.plan = None
 if "email" not in st.session_state: st.session_state.email = None
@@ -199,8 +270,6 @@ if "expander_login" not in st.session_state: st.session_state.expander_login = F
 if "expander_registro" not in st.session_state: st.session_state.expander_registro = False
 if "login_id" not in st.session_state: st.session_state.login_id = 0
 if "registro_id" not in st.session_state: st.session_state.registro_id = 0
-
-# Estado en memoria para controlar si el usuario desea expandir o colapsar el menú lateral
 if "sidebar_visible" not in st.session_state: st.session_state.sidebar_visible = True
 
 LOCALES = {
@@ -223,7 +292,7 @@ LOCALES = {
 }
 L = LOCALES["es"]
 
-# Si el usuario decide colapsar el menú lateral desde nuestra botonera, lo manejamos limpiamente en Streamlit
+# Si el usuario decide contraer el menú lateral, ocultamos completamente su renderizado nativo
 if st.session_state.sidebar_visible:
     with st.sidebar:
         st.markdown(f'<div class="sidebar-brand-title">{L["marca"]}</div>', unsafe_allow_html=True)
@@ -231,10 +300,10 @@ if st.session_state.sidebar_visible:
             with open("Mongoose.gif", "rb") as file_:
                 contents = file_.read()
                 data_url = base64.b64encode(contents).decode("utf-8")
-            st.markdown(
-                f'<img src="data:image/gif;base64,{data_url}" style="width:100%; border-radius:8px; margin-bottom:15px;" alt="BMX.AI Animation">',
-                unsafe_allow_html=True,
-            )
+                st.markdown(
+                    f'<img src="data:image/gif;base64,{data_url}" style="width:100%; border-radius:8px; margin-bottom:15px;" alt="BMX.AI Animation">',
+                    unsafe_allow_html=True,
+                )
         except FileNotFoundError:
             st.warning("No se encontró el archivo Mongoose.gif en la raíz del repositorio.")
         st.markdown("---")
@@ -272,6 +341,7 @@ if st.session_state.sidebar_visible:
                                 st.warning(L["act_pend"])
                         else:
                             st.error(L["no_encontrado"])
+
             with st.expander(L["nuevo_reg"], expanded=st.session_state.get("expander_registro", False),
                              key=f"exp_reg_{st.session_state.registro_id}"):
                 n = st.text_input(L["nom_com"], key="reg_nombre")
@@ -286,7 +356,7 @@ if st.session_state.sidebar_visible:
                             fecha_hoy = time.strftime("%Y-%m-%d")
                             app.ejecutar_sql(
                                 """INSERT INTO usuarios (nombre, email, plan_suscripcion, fecha_pago, activo, contador_ingresos, fecha_registro)
-                                 VALUES (?, ?, ?, ?, 1, 0, ?)""", (n, correo_limpio, p, fecha_hoy, fecha_hoy))
+                                   VALUES (?, ?, ?, ?, 1, 0, ?)""", (n, correo_limpio, p, fecha_hoy, fecha_hoy))
                             st.session_state.registro_id += 1
                             for key in ["reg_nombre", "reg_email"]:
                                 if key in st.session_state:
@@ -296,7 +366,7 @@ if st.session_state.sidebar_visible:
                             st.rerun()
                         except Exception as ex:
                             st.error(f"Error: {ex}")
-                            st.link_button("💳 Pagar con ePayco", "https://payco.link")
+            st.link_button("💳 Pagar con ePayco", "https://payco.link")
         else:
             st.markdown(
                 f'<div class="sidebar-card">{L["lbl_plan"]} <span class="badge-active">{st.session_state.plan}</span></div>',
@@ -320,7 +390,9 @@ if st.session_state.sidebar_visible:
             if st.button(L["cerrar_sesion"]):
                 st.session_state.clear()
                 st.rerun()
-
+else:
+    # Fuerza al layout principal a ocupar el espacio del sidebar cuando se colapsa de forma manual
+    st.markdown("""<style>[data-testid="stSidebar"] { display: none !important; }</style>""", unsafe_allow_html=True)
 # --- ÁREA CENTRAL ---
 # Botón dinámico personalizado para alternar de forma segura el menú lateral utilizando el menor espacio
 texto_boton_sidebar = ">>" if not st.session_state.sidebar_visible else "<<"
@@ -342,12 +414,14 @@ else:
         f"🔢 **Ingresos:** `{st.session_state.contador_ingresos}` | "
         f"📅 **Registro:** `{st.session_state.fecha_registro}`"
     )
+
     if "current_store" in st.session_state:
         if "messages" not in st.session_state:
             st.session_state.messages = []
         for msg in st.session_state.messages:
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
+
         if prompt := st.chat_input(L["chat_input"]):
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user"):
@@ -366,24 +440,25 @@ else:
                                     types.Tool(file_search=types.FileSearch(file_search_store_names=[id_string_store]))]
                             )
                         )
-                    texto_respuesta = response.text.lower()
-                    indicadores_ausencia = ["no encontr", "no hall", "no tengo", "no hay", "no se menciona",
-                                            "no contiene"]
-                    if any(idx in texto_respuesta for idx in indicadores_ausencia) or response.text.strip() == "":
-                        with st.spinner(L["spinner_fallback"]):
-                            archivos_planos = []
-                            try:
-                                for f in client.files.list():
-                                    if getattr(f, 'display_name', '').lower().endswith('.pdf'):
-                                        archivos_planos.append(f)
-                            except Exception:
-                                pass
-                            payload_alternativo = [prompt] + archivos_planos
-                            response = client.models.generate_content(
-                                model='gemini-2.5-flash',
-                                contents=payload_alternativo
-                            )
-                    st.markdown(response.text)
-                    st.session_state.messages.append({"role": "assistant", "content": response.text})
+                        texto_respuesta = response.text.lower() if response.text else ""
+                        indicadores_ausencia = ["no encontr", "no hall", "no tengo", "no hay", "no se menciona",
+                                                "no contiene"]
+
+                        if any(idx in texto_respuesta for idx in indicadores_ausencia) or not response.text.strip():
+                            with st.spinner(L["spinner_fallback"]):
+                                archivos_planos = []
+                                try:
+                                    for f in client.files.list():
+                                        if getattr(f, 'display_name', '').lower().endswith('.pdf'):
+                                            archivos_planos.append(f)
+                                except Exception:
+                                    pass
+                                payload_alternativo = [prompt] + archivos_planos
+                                response = client.models.generate_content(
+                                    model='gemini-2.5-flash',
+                                    contents=payload_alternativo
+                                )
+                        st.markdown(response.text)
+                st.session_state.messages.append({"role": "assistant", "content": response.text})
             except Exception as e:
                 st.error(f"{L['err_consulta']} {e}")
