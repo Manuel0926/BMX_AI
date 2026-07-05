@@ -1,1 +1,6 @@
+[client]
+showErrorDetails = "stacktrace"
+toolbarMode = "minimal"
 
+[browser]
+gatherUsageStats = false
